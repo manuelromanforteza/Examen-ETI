@@ -9,6 +9,18 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Root → group join/login page
+  root "groups#new"
+
+  # Group join / session
+  get  "join",   to: "groups#new",    as: :join
+  post "join",   to: "groups#create"
+  delete "leave", to: "groups#destroy", as: :leave
+
+  # Strategy catalog + selection
+  get  "strategies",          to: "strategies#index",  as: :strategies
+  post "strategies/:id/pick", to: "strategies#pick",   as: :pick_strategy
+
+  # Waiting room (after selecting)
+  get "waiting", to: "groups#waiting", as: :waiting
 end

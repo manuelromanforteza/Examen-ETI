@@ -1,0 +1,41 @@
+<% content_for :title, "Esperando al profesor — Torneo del Dilema" %>
+
+<div class="max-w-lg mx-auto mt-12 text-center">
+  <div class="bg-white rounded-2xl shadow-lg p-10">
+    <div class="text-5xl mb-4">✅</div>
+    <h1 class="text-2xl font-bold text-indigo-700 mb-2">¡Estrategia confirmada!</h1>
+
+    <% if @strategy %>
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 my-6 text-left">
+        <p class="text-xs uppercase tracking-wide text-indigo-400 font-semibold mb-1">Tu estrategia</p>
+        <p class="text-xl font-bold text-indigo-800"><%= @strategy.name %></p>
+        <p class="text-sm text-gray-600 mt-1"><%= @strategy.description %></p>
+      </div>
+    <% else %>
+      <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 my-6 text-left">
+        <p class="text-sm text-yellow-800">Aún no has elegido una estrategia.</p>
+      </div>
+    <% end %>
+
+    <div class="text-gray-500 text-sm mb-6">
+      <p class="font-medium text-gray-700 mb-1">Estado del torneo</p>
+      <p>
+        <span class="font-semibold text-indigo-600"><%= @ready_groups %></span>
+        de
+        <span class="font-semibold text-indigo-600"><%= @total_groups %></span>
+        grupos han elegido su estrategia.
+      </p>
+    </div>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-yellow-800 text-sm">
+      ⏳ Esperando a que el profesor inicie el torneo…
+    </div>
+
+    <% if @tournament.status.in?(%w[setup collecting]) %>
+      <div class="mt-6">
+        <%= link_to "Cambiar estrategia", strategies_path,
+            class: "text-indigo-500 hover:underline text-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>

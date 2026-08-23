@@ -1,0 +1,33 @@
+<% content_for :title, "Ingresar — Torneo del Dilema" %>
+
+<div class="max-w-md mx-auto mt-12">
+  <div class="bg-white rounded-2xl shadow-lg p-8">
+    <h1 class="text-2xl font-bold text-indigo-700 mb-2">Bienvenido al Torneo</h1>
+    <p class="text-gray-500 text-sm mb-6">
+      Ingresa el nombre de tu grupo y un PIN de 4 dígitos.<br>
+      Si es tu primera vez, el grupo se crea automáticamente.
+    </p>
+
+    <%= form_with url: join_path, method: :post, local: true, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label :name, "Nombre del grupo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :name, placeholder: "Ej: Los Halcones",
+            class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400",
+            required: true, autocomplete: "off" %>
+      </div>
+
+      <div>
+        <%= f.label :pin, "PIN de 4 dígitos", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.password_field :pin, placeholder: "••••",
+            maxlength: 4, minlength: 4, pattern: "\\d{4}",
+            class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400",
+            required: true, autocomplete: "off",
+            inputmode: "numeric" %>
+        <p class="text-xs text-gray-400 mt-1">Recuerda este PIN — lo necesitarás para volver a ingresar.</p>
+      </div>
+
+      <%= f.submit "Ingresar →",
+          class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-4 py-2 transition cursor-pointer" %>
+    <% end %>
+  </div>
+</div>

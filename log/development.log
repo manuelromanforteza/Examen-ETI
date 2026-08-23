@@ -127,3 +127,382 @@ FOREIGN KEY ("strategy_id")
   [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."id" ASC LIMIT 1 /*application='ExamenEti'*/[0m
   [1m[36mStrategy Pluck (0.4ms)[0m  [1m[34mSELECT "strategies"."key" FROM "strategies" /*application='ExamenEti'*/[0m
   [1m[36mStrategy Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mTournamentSession Load (1.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" ORDER BY "tournament_sessions"."id" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mTournamentSession Create (2.5ms)[0m  [1m[32mINSERT INTO "tournament_sessions" ("created_at", "rounds_per_match", "status", "updated_at") VALUES ('2026-08-23 13:03:49.419686', 10, 'collecting', '2026-08-23 13:03:49.419686') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (1.9ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mGroup Create (5.4ms)[0m  [1m[32mINSERT INTO "groups" ("created_at", "name", "pin_digest", "session_id", "updated_at") VALUES ('2026-08-23 13:03:49.693830', 'TestAuth', '$2a$12$bALfpz2uTVcrGspCbeojiePqvj02.2by7aheEj4win12dbmOAyx4u', 1, '2026-08-23 13:03:49.693830') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (2.4ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+Started GET "/" for ::1 at 2026-08-23 09:11:29 -0400
+  [1m[36mActiveRecord::SchemaMigration Load (3.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+Processing by GroupsController#new as HTML
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" IS NULL LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 6.6ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 16.8ms | GC: 0.0ms)
+Completed 200 OK in 58ms (Views: 20.8ms | ActiveRecord: 7.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/join" for ::1 at 2026-08-23 09:12:01 -0400
+Processing by GroupsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "name" => "Los halcaaones ", "pin" => "1234", "commit" => "Ingresar →"}
+  [1m[36mTournamentSession Load (2.9ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."status" IN ('setup', 'collecting') ORDER BY "tournament_sessions"."created_at" DESC LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:22:in 'ApplicationController#active_session'
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."session_id" = 1 AND "groups"."name" = 'Los halcaaones' LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:26:in 'GroupsController#create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mTournamentSession Load (2.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mGroup Create (0.6ms)[0m  [1m[32mINSERT INTO "groups" ("created_at", "name", "pin_digest", "session_id", "updated_at") VALUES ('2026-08-23 13:12:02.064494', 'Los halcaaones', '$2a$12$Yb22wPO7/1ghP4Yy.4Bei.T6V2ZP7kpcOSjyH4PxE7gVI24eyJb5S', 1, '2026-08-23 13:12:02.064494') RETURNING "id" /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mTRANSACTION (4.8ms)[0m  [1m[35mCOMMIT /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mSelection Load (1.5ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Redirected to http://localhost:3000/strategies
+↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Completed 302 Found in 273ms (ActiveRecord: 17.0ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/strategies" for ::1 at 2026-08-23 09:12:02 -0400
+Processing by StrategiesController#index as TURBO_STREAM
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mSelection Load (0.2ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:6:in 'StrategiesController#index'
+  [1m[36mTournamentSession Load (0.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:7:in 'StrategiesController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering strategies/index.html.erb within layouts/application
+  [1m[36mStrategy Load (0.7ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."name" ASC /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/views/strategies/index.html.erb:21
+  Rendered strategies/index.html.erb within layouts/application (Duration: 7.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 8.7ms | GC: 0.0ms)
+Completed 200 OK in 19ms (Views: 8.6ms | ActiveRecord: 2.8ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/strategies/1/pick" for ::1 at 2026-08-23 09:12:11 -0400
+Processing by StrategiesController#pick as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "id" => "1"}
+  [1m[36mGroup Load (0.7ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mTournamentSession Load (0.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:12:in 'StrategiesController#pick'
+  [1m[36mStrategy Load (0.6ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."id" = 1 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:19:in 'StrategiesController#pick'
+  [1m[36mSelection Load (0.5ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:20:in 'StrategiesController#pick'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mSelection Exists? (2.0ms)[0m  [1m[34mSELECT 1 AS one FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mSelection Create (1.6ms)[0m  [1m[32mINSERT INTO "selections" ("created_at", "group_id", "strategy_id", "updated_at") VALUES ('2026-08-23 13:12:11.785536', 2, 1, '2026-08-23 13:12:11.785536') RETURNING "id" /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mCOMMIT /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/strategies_controller.rb:24:in 'StrategiesController#pick'
+Completed 302 Found in 31ms (ActiveRecord: 8.2ms (6 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:12:11 -0400
+Processing by GroupsController#waiting as TURBO_STREAM
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (2.0ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (1.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.2ms | GC: 0.0ms)
+Completed 200 OK in 21ms (Views: 2.9ms | ActiveRecord: 4.5ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2026-08-23 09:12:19 -0400
+Processing by GroupsController#new as HTML
+  [1m[36mGroup Load (0.8ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mSelection Load (0.7ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Completed 302 Found in 9ms (ActiveRecord: 1.4ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:12:19 -0400
+Processing by GroupsController#waiting as HTML
+  [1m[36mGroup Load (0.7ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (0.7ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.2ms | GC: 0.0ms)
+Completed 200 OK in 19ms (Views: 3.6ms | ActiveRecord: 2.9ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2026-08-23 09:12:29 -0400
+Processing by GroupsController#new as HTML
+  [1m[36mGroup Load (0.7ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mSelection Load (0.7ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Completed 302 Found in 10ms (ActiveRecord: 1.3ms (2 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:12:29 -0400
+Processing by GroupsController#waiting as HTML
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (0.8ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 2 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.0ms | GC: 0.0ms)
+Completed 200 OK in 18ms (Views: 3.7ms | ActiveRecord: 3.0ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started DELETE "/leave" for ::1 at 2026-08-23 09:12:33 -0400
+Processing by GroupsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+Redirected to http://localhost:3000/join
+↳ app/controllers/groups_controller.rb:46:in 'GroupsController#destroy'
+Completed 302 Found in 3ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/join" for ::1 at 2026-08-23 09:12:33 -0400
+Processing by GroupsController#new as TURBO_STREAM
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" IS NULL LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 1.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.8ms | GC: 0.0ms)
+Completed 200 OK in 6ms (Views: 3.4ms | ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/join" for ::1 at 2026-08-23 09:12:41 -0400
+Processing by GroupsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "name" => "Linces", "pin" => "0000", "commit" => "Ingresar →"}
+  [1m[36mTournamentSession Load (1.1ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."status" IN ('setup', 'collecting') ORDER BY "tournament_sessions"."created_at" DESC LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:22:in 'ApplicationController#active_session'
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."session_id" = 1 AND "groups"."name" = 'Linces' LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:26:in 'GroupsController#create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mTournamentSession Load (2.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mGroup Create (0.5ms)[0m  [1m[32mINSERT INTO "groups" ("created_at", "name", "pin_digest", "session_id", "updated_at") VALUES ('2026-08-23 13:12:41.962896', 'Linces', '$2a$12$TP28xtB4hsFPxY0UHeENW.Ei9sb.2QY6GbJw9afmJ1GOLryi0jt0.', 1, '2026-08-23 13:12:41.962896') RETURNING "id" /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[35mCOMMIT /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:36:in 'GroupsController#create'
+  [1m[36mSelection Load (0.4ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Redirected to http://localhost:3000/strategies
+↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Completed 302 Found in 246ms (ActiveRecord: 8.3ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/strategies" for ::1 at 2026-08-23 09:12:41 -0400
+Processing by StrategiesController#index as TURBO_STREAM
+  [1m[36mGroup Load (0.3ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mSelection Load (0.3ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:6:in 'StrategiesController#index'
+  [1m[36mTournamentSession Load (0.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:7:in 'StrategiesController#index'
+  Rendering layout layouts/application.html.erb
+  Rendering strategies/index.html.erb within layouts/application
+  [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."name" ASC /*action='index',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/views/strategies/index.html.erb:21
+  Rendered strategies/index.html.erb within layouts/application (Duration: 2.7ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 3.8ms | GC: 0.0ms)
+Completed 200 OK in 10ms (Views: 4.1ms | ActiveRecord: 1.2ms (4 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/strategies/4/pick" for ::1 at 2026-08-23 09:12:49 -0400
+Processing by StrategiesController#pick as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "id" => "4"}
+  [1m[36mGroup Load (0.8ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mTournamentSession Load (0.5ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:12:in 'StrategiesController#pick'
+  [1m[36mStrategy Load (0.6ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."id" = 4 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:19:in 'StrategiesController#pick'
+  [1m[36mSelection Load (0.4ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:20:in 'StrategiesController#pick'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mSelection Exists? (1.7ms)[0m  [1m[34mSELECT 1 AS one FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mSelection Create (0.6ms)[0m  [1m[32mINSERT INTO "selections" ("created_at", "group_id", "strategy_id", "updated_at") VALUES ('2026-08-23 13:12:49.363662', 3, 4, '2026-08-23 13:12:49.363662') RETURNING "id" /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[35mCOMMIT /*action='pick',application='ExamenEti',controller='strategies'*/[0m
+  ↳ app/controllers/strategies_controller.rb:23:in 'StrategiesController#pick'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/strategies_controller.rb:24:in 'StrategiesController#pick'
+Completed 302 Found in 25ms (ActiveRecord: 8.1ms (6 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:12:49 -0400
+Processing by GroupsController#waiting as TURBO_STREAM
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (0.4ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.3ms | GC: 0.0ms)
+Completed 200 OK in 11ms (Views: 1.9ms | ActiveRecord: 1.6ms (5 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/" for ::1 at 2026-08-23 09:13:07 -0400
+Processing by GroupsController#new as HTML
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mSelection Load (0.4ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/groups_controller.rb:7:in 'GroupsController#new'
+Completed 302 Found in 52ms (ActiveRecord: 1.0ms (2 queries, 0 cached) | GC: 45.9ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:13:07 -0400
+Processing by GroupsController#waiting as HTML
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (0.7ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.8ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.4ms | GC: 0.0ms)
+Completed 200 OK in 21ms (Views: 3.4ms | ActiveRecord: 3.4ms (5 queries, 0 cached) | GC: 0.8ms)
+
+
+Started DELETE "/leave" for ::1 at 2026-08-23 09:13:11 -0400
+Processing by GroupsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+Redirected to http://localhost:3000/join
+↳ app/controllers/groups_controller.rb:46:in 'GroupsController#destroy'
+Completed 302 Found in 5ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/join" for ::1 at 2026-08-23 09:13:11 -0400
+Processing by GroupsController#new as TURBO_STREAM
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" IS NULL LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 1.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.5ms | GC: 0.0ms)
+Completed 200 OK in 7ms (Views: 3.3ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/join" for ::1 at 2026-08-23 09:13:26 -0400
+Processing by GroupsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "name" => "Linces", "pin" => "1234", "commit" => "Ingresar →"}
+  [1m[36mTournamentSession Load (0.6ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."status" IN ('setup', 'collecting') ORDER BY "tournament_sessions"."created_at" DESC LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:22:in 'ApplicationController#active_session'
+  [1m[36mGroup Load (0.4ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."session_id" = 1 AND "groups"."name" = 'Linces' LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:26:in 'GroupsController#create'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 3.6ms | GC: 1.8ms)
+  [1m[36mGroup Load (0.3ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" IS NULL LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  Rendered layout layouts/application.html.erb (Duration: 6.4ms | GC: 1.8ms)
+Completed 422 Unprocessable Content in 246ms (Views: 7.1ms | ActiveRecord: 1.3ms (3 queries, 0 cached) | GC: 1.8ms)
+
+
+Started POST "/join" for ::1 at 2026-08-23 09:13:32 -0400
+Processing by GroupsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]", "name" => "Linces", "pin" => "0000", "commit" => "Ingresar →"}
+  [1m[36mTournamentSession Load (0.7ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."status" IN ('setup', 'collecting') ORDER BY "tournament_sessions"."created_at" DESC LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:22:in 'ApplicationController#active_session'
+  [1m[36mGroup Load (0.8ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."session_id" = 1 AND "groups"."name" = 'Linces' LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:26:in 'GroupsController#create'
+  [1m[36mSelection Load (0.4ms)[0m  [1m[34mSELECT "selections".* FROM "selections" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='create',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Redirected to http://localhost:3000/waiting
+↳ app/controllers/groups_controller.rb:40:in 'GroupsController#create'
+Completed 302 Found in 241ms (ActiveRecord: 1.9ms (3 queries, 0 cached) | GC: 1.1ms)
+
+
+Started GET "/waiting" for ::1 at 2026-08-23 09:13:32 -0400
+Processing by GroupsController#waiting as TURBO_STREAM
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  [1m[36mStrategy Load (0.5ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" INNER JOIN "selections" ON "strategies"."id" = "selections"."strategy_id" WHERE "selections"."group_id" = 3 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:51:in 'GroupsController#waiting'
+  [1m[36mTournamentSession Load (0.3ms)[0m  [1m[34mSELECT "tournament_sessions".* FROM "tournament_sessions" WHERE "tournament_sessions"."id" = 1 LIMIT 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:52:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:53:in 'GroupsController#waiting'
+  [1m[36mGroup Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "groups" INNER JOIN "selections" ON "selections"."group_id" = "groups"."id" WHERE "groups"."session_id" = 1 /*action='waiting',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/groups_controller.rb:54:in 'GroupsController#waiting'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/waiting.html.erb within layouts/application
+  Rendered groups/waiting.html.erb within layouts/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1.4ms | GC: 0.0ms)
+Completed 200 OK in 14ms (Views: 1.9ms | ActiveRecord: 2.0ms (5 queries, 0 cached) | GC: 0.7ms)
+
+
+Started DELETE "/leave" for ::1 at 2026-08-23 09:13:37 -0400
+Processing by GroupsController#destroy as TURBO_STREAM
+  Parameters: {"authenticity_token" => "[FILTERED]"}
+Redirected to http://localhost:3000/join
+↳ app/controllers/groups_controller.rb:46:in 'GroupsController#destroy'
+Completed 302 Found in 3ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/join" for ::1 at 2026-08-23 09:13:37 -0400
+Processing by GroupsController#new as TURBO_STREAM
+  [1m[36mGroup Load (0.5ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" IS NULL LIMIT 1 /*action='new',application='ExamenEti',controller='groups'*/[0m
+  ↳ app/controllers/application_controller.rb:14:in 'ApplicationController#current_group'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 1.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 2.4ms | GC: 0.0ms)
+Completed 200 OK in 6ms (Views: 3.1ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
