@@ -1,7 +1,7 @@
 # PROGRESS — Torneo del Dilema del Prisionero Iterado
 
 > Actualiza este archivo al terminar cada fase.  
-> Última actualización: **Fase 2 completa / Fase 3 pendiente**
+> Última actualización: **Fase 3 completa / Fase 4 pendiente** (99/99 tests ✅)
 
 ---
 
@@ -209,26 +209,18 @@ bundle exec rspec spec/lib/game_engine_spec.rb --format documentation
 | Fase 0 | Setup Rails, migraciones, modelos | ✅ Completa |
 | Fase 1 | GameEngine + 8 estrategias + tests | ✅ Completa |
 | Fase 2 | Flujo de grupos: entrada, catálogo, selección, espera | ✅ Completa |
-| Fase 3 | Panel admin + ejecución del torneo | ⬜ Pendiente |
+| Fase 3 | Panel admin + ejecución del torneo + resultados | ✅ Completa |
+| Fase 4 | Action Cable + animación reveal en vivo | ⬜ Pendiente |
 | Fase 4 | Action Cable + animación reveal en vivo | ⬜ Pendiente |
 | Fase 5 | Pulido visual, leaderboard final | ⬜ Pendiente |
 | Fase 6 | Deploy a Render.com | ⬜ Pendiente |
 
 ---
 
-## 8. Qué falta (Fase 2 en adelante)
+## 8. Qué falta (Fase 4 en adelante)
 
-### Fase 2 — Flujo de grupos
-- Página de entrada: nombre + PIN → crea grupo nuevo o autentica existente
-- Catálogo de estrategias: tarjetas Tailwind con descripción, pros y contras
-- Selección de estrategia: guarda `Selection`; permite cambio mientras `status = "collecting"`
-- Pantalla de espera: confirma elección, mensaje estático "esperando al profesor"
-- Tests de request para el flujo completo
-
-### Fase 3 — Panel admin
-- Vista admin simple (sin autenticación compleja, básica con sesión)
-- Lista de grupos y cuántos han elegido estrategia
-- Botón "Ejecutar torneo" → corre `GameEngine` round-robin → guarda `MatchResult`s
+### Fase 2 — Flujo de grupos ✅ COMPLETA
+### Fase 3 — Panel admin + ejecución del torneo ✅ COMPLETA
 
 ### Fase 4 — Action Cable + animación
 - Canal `TournamentChannel`
@@ -239,7 +231,7 @@ bundle exec rspec spec/lib/game_engine_spec.rb --format documentation
 ### Fase 5 — Pulido
 - Página de instrucciones/reglas
 - Leaderboard con animación de contadores
-- Distinción "más duelos ganados" vs "más puntos totales" (gancho pedagógico)
+- Distinción "más duelos ganados" vs "más puntos totales" (ya en resultados, mejorar presentación)
 
 ### Fase 6 — Deploy
 - Cuenta en Render.com, conectar repo GitHub, configurar Postgres en Render

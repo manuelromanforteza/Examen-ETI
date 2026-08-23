@@ -1,0 +1,95 @@
+<% content_for :title, "Panel Admin — Torneo del Dilema" %>
+
+<div class="mb-8 flex items-center justify-between">
+  <div>
+    <h1 class="text-3xl font-bold text-indigo-700 mb-1">Panel de Administración</h1>
+    <p class="text-gray-500 text-sm">
+      Sesión de torneo #<%= @tournament.id %> ·
+      Rondas por duelo: <strong><%= @tournament.rounds_per_match %></strong> ·
+      Estado:
+      <span class="font-semibold <%= @tournament.status == 'done' ? 'text-green-600' : 'text-yellow-600' %>">
+        <%= @tournament.status.upcase %>
+      </span>
+    </p>
+  </div>
+  <% if @already_run %>
+    <div class="flex gap-3">
+      <%= link_to "Ver resultados →", results_path,
+          class: "bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-2 text-sm transition" %>
+      <%= button_to "Reiniciar torneo", admin_reset_tournament_path, method: :post,
+          data: { confirm: "¿Seguro? Esto borrará todos los resultados y permite volver a jugar." },
+          class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg px-4 py-2 text-sm transition cursor-pointer" %>
+    </div>
+  <% end %>
+</div>
+
+<%# Progress bar %>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="font-bold text-gray-700">Grupos listos</h2>
+    <span class="text-2xl font-bold text-indigo-600"><%= @selected_count %> / <%= @groups.size %></span>
+  </div>
+  <div class="w-full bg-gray-100 rounded-full h-3">
+    <% pct = @groups.size > 0 ? (@selected_count.to_f / @groups.size * 100).round : 0 %>
+    <div class="bg-indigo-500 h-3 rounded-full transition-all" style="width: <%= pct %>%"></div>
+  </div>
+</div>
+
+<%# Groups table %>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+  <h2 class="font-bold text-gray-700 mb-4">Lista de grupos</h2>
+
+  <% if @groups.empty? %>
+    <p class="text-gray-400 text-sm italic">Ningún grupo se ha unido aún.</p>
+  <% else %>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-400 border-b border-gray-100">
+          <th class="pb-2 font-medium">Grupo</th>
+          <th class="pb-2 font-medium">Estrategia elegida</th>
+          <th class="pb-2 font-medium text-center">Estado</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        <% @groups.each do |group| %>
+          <tr>
+            <td class="py-2 font-medium text-gray-800"><%= group.name %></td>
+            <td class="py-2 text-gray-600">
+              <%= group.strategy&.name || "—" %>
+            </td>
+            <td class="py-2 text-center">
+              <% if group.selection %>
+                <span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">✓ Listo</span>
+              <% else %>
+                <span class="bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-0.5 rounded-full">Eligiendo…</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<%# Run button %>
+<div class="text-center">
+  <% if @can_run %>
+    <%= button_to "🚀 Ejecutar torneo",
+        admin_run_tournament_path,
+        method: :post,
+        data: { confirm: "¿Ejecutar el torneo ahora con #{@selected_count} grupos?" },
+        class: "bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl px-10 py-4 text-lg shadow-lg transition cursor-pointer" %>
+    <p class="text-gray-400 text-xs mt-2">
+      Se correrán <%= @selected_count * (@selected_count - 1) / 2 %> duelos
+      (<%= @selected_count %> grupos × round-robin × <%= @tournament.rounds_per_match %> rondas cada uno)
+    </p>
+  <% elsif @already_run %>
+    <p class="text-gray-400 text-sm">El torneo ya fue ejecutado.</p>
+  <% else %>
+    <button disabled
+        class="bg-gray-200 text-gray-400 font-bold rounded-xl px-10 py-4 text-lg cursor-not-allowed">
+      🚀 Ejecutar torneo
+    </button>
+    <p class="text-gray-400 text-xs mt-2">Necesitas al menos 2 grupos con estrategia elegida.</p>
+  <% end %>
+</div>

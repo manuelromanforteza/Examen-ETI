@@ -1,0 +1,140 @@
+<% content_for :title, "Resultados del Torneo — Dilema del Prisionero" %>
+
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-indigo-700 mb-1">Resultados del Torneo</h1>
+  <p class="text-gray-500 text-sm">
+    <%= @tournament.groups.count %> grupos ·
+    <%= @tournament.rounds_per_match %> rondas por duelo ·
+    <%= @tournament.groups.count * (@tournament.groups.count - 1) / 2 %> duelos totales
+  </p>
+</div>
+
+<%# Pedagogical callout: most points vs most duels %>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+  <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+    <p class="text-xs uppercase tracking-wide text-indigo-400 font-semibold mb-1">🏆 Más puntos totales</p>
+    <p class="text-2xl font-bold text-indigo-800"><%= @most_points_entry[:group].name %></p>
+    <p class="text-sm text-indigo-600">
+      <%= @most_points_entry[:strategy].name %> —
+      <strong><%= @most_points_entry[:total_score] %> pts</strong>
+    </p>
+  </div>
+
+  <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+    <p class="text-xs uppercase tracking-wide text-emerald-500 font-semibold mb-1">⚔️ Más duelos ganados</p>
+    <p class="text-2xl font-bold text-emerald-800"><%= @most_wins_entry[:group].name %></p>
+    <p class="text-sm text-emerald-600">
+      <%= @most_wins_entry[:strategy].name %> —
+      <strong><%= @most_wins_entry[:wins] %> victorias</strong>
+    </p>
+  </div>
+</div>
+
+<% if @most_points_entry[:group].id != @most_wins_entry[:group].id %>
+  <div class="mb-8 bg-yellow-50 border border-yellow-300 rounded-xl px-5 py-4 text-yellow-900 text-sm">
+    <strong>💡 Dato interesante:</strong>
+    El grupo que acumuló más puntos (<em><%= @most_points_entry[:group].name %></em>)
+    es <strong>distinto</strong> del que ganó más duelos individuales
+    (<em><%= @most_wins_entry[:group].name %></em>).
+    Esto es exactamente lo que pasó en el torneo original de Axelrod:
+    Tit for Tat nunca ganó un duelo individual, ¡pero ganó el torneo!
+  </div>
+<% end %>
+
+<%# Leaderboard table %>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+  <h2 class="font-bold text-gray-700 mb-4 text-lg">Leaderboard</h2>
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-gray-400 border-b border-gray-100 text-xs uppercase tracking-wide">
+        <th class="pb-3 font-semibold">Pos</th>
+        <th class="pb-3 font-semibold">Grupo</th>
+        <th class="pb-3 font-semibold">Estrategia</th>
+        <th class="pb-3 font-semibold text-right">Puntos</th>
+        <th class="pb-3 font-semibold text-center">V</th>
+        <th class="pb-3 font-semibold text-center">E</th>
+        <th class="pb-3 font-semibold text-center">D</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-50">
+      <% @leaderboard.each_with_index do |entry, i| %>
+        <%
+          medal = case i
+                  when 0 then "🥇"
+                  when 1 then "🥈"
+                  when 2 then "🥉"
+                  else "#{i + 1}."
+                  end
+          row_class = i == 0 ? "bg-yellow-50" : ""
+        %>
+        <tr class="<%= row_class %>">
+          <td class="py-3 font-bold text-lg"><%= medal %></td>
+          <td class="py-3 font-semibold text-gray-800"><%= entry[:group].name %></td>
+          <td class="py-3 text-gray-500"><%= entry[:strategy]&.name || "—" %></td>
+          <td class="py-3 text-right font-bold text-indigo-700 text-base"><%= entry[:total_score] %></td>
+          <td class="py-3 text-center text-green-600 font-semibold"><%= entry[:wins] %></td>
+          <td class="py-3 text-center text-gray-400"><%= entry[:draws] %></td>
+          <td class="py-3 text-center text-red-400"><%= entry[:losses] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p class="text-xs text-gray-400 mt-2">V = Victorias · E = Empates · D = Derrotas</p>
+</div>
+
+<%# Per-group expandable detail %>
+<h2 class="font-bold text-gray-700 mb-4 text-lg">Detalle por grupo</h2>
+<div class="space-y-3">
+  <% @leaderboard.each do |entry| %>
+    <details class="bg-white rounded-xl border border-gray-100 shadow-sm">
+      <summary class="px-6 py-4 cursor-pointer flex items-center justify-between hover:bg-gray-50 rounded-xl select-none">
+        <div class="flex items-center gap-3">
+          <span class="font-bold text-gray-800"><%= entry[:group].name %></span>
+          <span class="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
+            <%= entry[:strategy]&.name %>
+          </span>
+        </div>
+        <span class="font-bold text-indigo-600"><%= entry[:total_score] %> pts</span>
+      </summary>
+
+      <div class="px-6 pb-4 border-t border-gray-50 mt-2">
+        <table class="w-full text-sm mt-2">
+          <thead>
+            <tr class="text-left text-gray-400 text-xs">
+              <th class="pb-2 font-medium">Rival</th>
+              <th class="pb-2 font-medium">Estrategia rival</th>
+              <th class="pb-2 font-medium text-center">Mis puntos</th>
+              <th class="pb-2 font-medium text-center">Sus puntos</th>
+              <th class="pb-2 font-medium text-center">Resultado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <% entry[:matches].sort_by { |m| -m[:my_score] }.each do |match| %>
+              <tr>
+                <td class="py-2 font-medium text-gray-700"><%= match[:opponent].name %></td>
+                <td class="py-2 text-gray-500"><%= match[:opponent_strategy]&.name %></td>
+                <td class="py-2 text-center font-bold text-indigo-700"><%= match[:my_score] %></td>
+                <td class="py-2 text-center text-gray-500"><%= match[:their_score] %></td>
+                <td class="py-2 text-center">
+                  <% case match[:outcome]
+                     when :win  %>
+                    <span class="text-green-600 font-semibold text-xs">Victoria ✓</span>
+                  <% when :draw %>
+                    <span class="text-gray-400 text-xs">Empate</span>
+                  <% when :loss %>
+                    <span class="text-red-400 text-xs">Derrota</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  <% end %>
+</div>
+
+<div class="mt-8 text-center">
+  <%= link_to "← Volver al inicio", root_path,
+      class: "text-indigo-400 hover:text-indigo-600 text-sm hover:underline" %>
+</div>

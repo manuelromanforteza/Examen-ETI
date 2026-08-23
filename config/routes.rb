@@ -23,4 +23,12 @@ Rails.application.routes.draw do
 
   # Waiting room (after selecting)
   get "waiting", to: "groups#waiting", as: :waiting
+
+  # Admin panel (HTTP Basic Auth)
+  get  "admin",                  to: "admin#index",           as: :admin
+  post "admin/run_tournament",   to: "admin#run_tournament",  as: :admin_run_tournament
+  post "admin/reset_tournament", to: "admin#reset_tournament", as: :admin_reset_tournament
+
+  # Results (public after tournament is done)
+  get "results", to: "results#index", as: :results
 end
