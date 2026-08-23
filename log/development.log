@@ -1,0 +1,129 @@
+  [1m[36mStrategy Count (3.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35m (63.7ms)[0m  [1m[35mCREATE DATABASE "examen_eti_development" ENCODING = 'unicode' /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35m (11.3ms)[0m  [1m[35mCREATE DATABASE "examen_eti_test" ENCODING = 'unicode' /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='ExamenEti'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "groups" CASCADE /*application='ExamenEti'*/[0m
+  [1m[35m (16.2ms)[0m  [1m[35mCREATE TABLE "groups" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "name" character varying, "pin_digest" character varying, "session_id" bigint NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[35m (5.4ms)[0m  [1m[35mCREATE INDEX "index_groups_on_session_id" ON "groups" ("session_id") /*application='ExamenEti'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "match_results" CASCADE /*application='ExamenEti'*/[0m
+  [1m[35m (10.1ms)[0m  [1m[35mCREATE TABLE "match_results" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "group_a_id" bigint NOT NULL, "group_b_id" bigint NOT NULL, "rounds_json" text, "score_a" integer, "score_b" integer, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[35m (4.9ms)[0m  [1m[35mCREATE INDEX "index_match_results_on_group_a_id" ON "match_results" ("group_a_id") /*application='ExamenEti'*/[0m
+  [1m[35m (4.2ms)[0m  [1m[35mCREATE INDEX "index_match_results_on_group_b_id" ON "match_results" ("group_b_id") /*application='ExamenEti'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "selections" CASCADE /*application='ExamenEti'*/[0m
+  [1m[35m (5.9ms)[0m  [1m[35mCREATE TABLE "selections" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "group_id" bigint NOT NULL, "strategy_id" bigint NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[35m (4.4ms)[0m  [1m[35mCREATE INDEX "index_selections_on_group_id" ON "selections" ("group_id") /*application='ExamenEti'*/[0m
+  [1m[35m (3.6ms)[0m  [1m[35mCREATE INDEX "index_selections_on_strategy_id" ON "selections" ("strategy_id") /*application='ExamenEti'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "strategies" CASCADE /*application='ExamenEti'*/[0m
+  [1m[35m (7.1ms)[0m  [1m[35mCREATE TABLE "strategies" ("id" bigserial primary key, "cons" text, "created_at" timestamp(6) NOT NULL, "description" text, "key" character varying, "name" character varying, "pros" text, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE IF EXISTS "tournament_sessions" CASCADE /*application='ExamenEti'*/[0m
+  [1m[35m (7.3ms)[0m  [1m[35mCREATE TABLE "tournament_sessions" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "rounds_per_match" integer DEFAULT 10 NOT NULL, "status" character varying DEFAULT 'setup' NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mALTER TABLE "groups" ADD CONSTRAINT "fk_rails_9018ba8e62"
+FOREIGN KEY ("session_id")
+  REFERENCES "tournament_sessions" ("id")
+ /*application='ExamenEti'*/[0m
+  [1m[35m (2.0ms)[0m  [1m[35mALTER TABLE "match_results" ADD CONSTRAINT "fk_rails_0166bc55bd"
+FOREIGN KEY ("group_a_id")
+  REFERENCES "groups" ("id")
+ /*application='ExamenEti'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mALTER TABLE "match_results" ADD CONSTRAINT "fk_rails_0cdcf0cffe"
+FOREIGN KEY ("group_b_id")
+  REFERENCES "groups" ("id")
+ /*application='ExamenEti'*/[0m
+  [1m[35m (1.5ms)[0m  [1m[35mALTER TABLE "selections" ADD CONSTRAINT "fk_rails_21d2b41977"
+FOREIGN KEY ("group_id")
+  REFERENCES "groups" ("id")
+ /*application='ExamenEti'*/[0m
+  [1m[35m (1.5ms)[0m  [1m[35mALTER TABLE "selections" ADD CONSTRAINT "fk_rails_19f51934cc"
+FOREIGN KEY ("strategy_id")
+  REFERENCES "strategies" ("id")
+ /*application='ExamenEti'*/[0m
+  [1m[35m (6.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260823123438) /*application='ExamenEti'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20260823123437),
+(20260823123436),
+(20260823123435),
+(20260823123434); /*application='ExamenEti'*/[0m
+  [1m[35m (6.3ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-08-23 12:48:14.086318', '2026-08-23 12:48:14.086321') RETURNING "key" /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.5ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.3ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', 'ac9eb5dc144c0424996adde5fb59330d43ae495d', '2026-08-23 12:48:14.108356', '2026-08-23 12:48:14.108359') RETURNING "key" /*application='ExamenEti'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(1220289986296470705) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(1220289986296470705) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (10.9ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."id" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (1.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.5ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."id" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35m (15.4ms)[0m  [1m[35mCREATE DATABASE "examen_eti_development" ENCODING = 'unicode' /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35m (7.8ms)[0m  [1m[35mCREATE DATABASE "examen_eti_test" ENCODING = 'unicode' /*application='ExamenEti'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(1220289986296470705) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(1220289986296470705) /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='ExamenEti'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='ExamenEti'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.6ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'tit_for_tat' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'tit_for_tat' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (3.4ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('Sin ruido en el juego no es un problema, pero en variantes con errores puede quedar atrapada en ciclos de venganza mutua.', '2026-08-23 12:51:55.295675', 'Coopera en la primera ronda. A partir de ahí, copia exactamente el último movimiento del rival: si cooperó, coopera; si traicionó, traiciona.', 'tit_for_tat', 'Tit for Tat', 'Simple, justa y «perdonadora»: vuelve a cooperar en cuanto el rival lo hace. Castiga la traición de inmediato sin guardar rencor.', '2026-08-23 12:51:55.295675') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (2.0ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'always_cooperate' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (2.0ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'always_cooperate' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.3ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('Completamente explotable: un rival que siempre traiciona obtiene 5 por ronda mientras esta estrategia acumula 0.', '2026-08-23 12:51:55.310918', 'Siempre coopera, sin importar lo que haga el rival ni el historial de la partida.', 'always_cooperate', 'Always Cooperate', 'Maximiza el puntaje conjunto si el rival también coopera siempre (ambos obtienen 3 por ronda).', '2026-08-23 12:51:55.310918') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (1.8ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.4ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'always_defect' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (2.4ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'always_defect' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.4ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('Provoca represalia inmediata de estrategias reactivas. A largo plazo acumula castigos mutuos (1/1) en lugar de recompensas (3/3).', '2026-08-23 12:51:55.323871', 'Siempre traiciona, independientemente del historial o del movimiento del rival.', 'always_defect', 'Always Defect', 'Nunca «regala» puntos al rival. Gana cualquier duelo individual contra estrategias cooperadoras.', '2026-08-23 12:51:55.323871') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (1.9ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.5ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'grudger' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (3.2ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'grudger' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.7ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('No perdona nunca. Un solo «accidente» desencadena defección mutua el resto del juego.', '2026-08-23 12:51:55.340292', 'Coopera en todas las rondas hasta que el rival traicione por primera vez. Desde ese momento, traiciona para siempre, sin excepción.', 'grudger', 'Grudger / Trigger', 'Disuade fuertemente la traición: el rival sabe que una sola defección arruina toda la partida.', '2026-08-23 12:51:55.340292') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (2.3ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.8ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'tit_for_two_tats' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (3.0ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'tit_for_two_tats' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.5ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('Puede ser explotada por rivales que alternan cooperación y traición, ya que nunca acumula dos traiciones seguidas frente a ellos.', '2026-08-23 12:51:55.357155', 'Coopera siempre, excepto cuando el rival ha traicionado en las DOS rondas consecutivas inmediatamente anteriores. En ese caso traiciona una vez y vuelve a estar lista para cooperar.', 'tit_for_two_tats', 'Tit for Two Tats', 'Más «perdonadora» que Tit for Tat; evita ciclos de venganza por traiciones aisladas.', '2026-08-23 12:51:55.357155') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (2.3ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.5ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'suspicious_tit_for_tat' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (2.6ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'suspicious_tit_for_tat' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.5ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('La traición inicial provoca represalia innecesaria contra estrategias cooperadoras, perdiendo puntos en las primeras rondas.', '2026-08-23 12:51:55.372291', 'Igual que Tit for Tat, pero comienza traicionando en la primera ronda. A partir de la segunda, copia el último movimiento del rival.', 'suspicious_tit_for_tat', 'Suspicious Tit for Tat', '«Prueba» al rival desde el inicio; si el rival es cooperador, la estrategia se sincroniza rápidamente con él.', '2026-08-23 12:51:55.372291') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (2.1ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'pavlov' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (2.4ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'pavlov' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.5ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('Su comportamiento es menos intuitivo de explicar y puede parecer errático frente a estrategias poco predecibles.', '2026-08-23 12:51:55.385786', 'Repite su jugada anterior si obtuvo un puntaje alto (3 ó 5 puntos). Cambia de jugada si obtuvo un puntaje bajo (0 ó 1 punto). Comienza cooperando.', 'pavlov', 'Pavlov (Win-Stay / Lose-Shift)', 'Se adapta dinámicamente. Tiene buen desempeño general y puede «corregir» a un rival que coopera pero duda.', '2026-08-23 12:51:55.385786') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (1.7ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.5ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" WHERE "strategies"."key" = 'random' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Exists? (2.5ms)[0m  [1m[34mSELECT 1 AS one FROM "strategies" WHERE "strategies"."key" = 'random' LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Create (0.6ms)[0m  [1m[32mINSERT INTO "strategies" ("cons", "created_at", "description", "key", "name", "pros", "updated_at") VALUES ('No tiene lógica estratégica real. En promedio rinde mal porque no explota el comportamiento cooperador ni castiga el traicionero.', '2026-08-23 12:51:55.399790', 'Coopera o traiciona con probabilidad 50/50 en cada ronda, de forma completamente aleatoria e independiente del historial.', 'random', 'Random', 'Completamente impredecible; ningún rival puede anticipar sus movimientos.', '2026-08-23 12:51:55.399790') RETURNING "id" /*application='ExamenEti'*/[0m
+  [1m[36mTRANSACTION (1.7ms)[0m  [1m[35mCOMMIT /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (12.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (10.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Load (0.3ms)[0m  [1m[34mSELECT "strategies".* FROM "strategies" ORDER BY "strategies"."id" ASC LIMIT 1 /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Pluck (0.4ms)[0m  [1m[34mSELECT "strategies"."key" FROM "strategies" /*application='ExamenEti'*/[0m
+  [1m[36mStrategy Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "strategies" /*application='ExamenEti'*/[0m
