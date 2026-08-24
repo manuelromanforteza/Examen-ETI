@@ -1,0 +1,61 @@
+<% content_for :title, "Mis duelos — Torneo del Dilema" %>
+
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-indigo-700 mb-1">Mis duelos</h1>
+  <p class="text-gray-500 text-sm">
+    Grupo: <strong class="text-gray-700"><%= @group.name %></strong>
+    · Estrategia: <strong class="text-gray-700"><%= @group.strategy&.name %></strong>
+  </p>
+</div>
+
+<% if @my_matches.empty? %>
+  <p class="text-gray-400 italic">No hay duelos registrados para tu grupo.</p>
+<% else %>
+  <div class="space-y-4">
+    <% @my_matches.each do |m| %>
+      <%
+        border_color = case m[:outcome]
+                       when :win  then "border-green-300 bg-green-50"
+                       when :draw then "border-gray-200 bg-gray-50"
+                       when :loss then "border-red-200 bg-red-50"
+                       end
+        outcome_label = case m[:outcome]
+                        when :win  then "Victoria ✓"
+                        when :draw then "Empate"
+                        when :loss then "Derrota"
+                        end
+        outcome_color = case m[:outcome]
+                        when :win  then "text-green-700 font-bold"
+                        when :draw then "text-gray-500"
+                        when :loss then "text-red-600 font-semibold"
+                        end
+      %>
+      <div class="bg-white rounded-2xl border <%= border_color %> shadow-sm p-5 flex items-center justify-between gap-4">
+        <div class="flex-1">
+          <p class="font-bold text-gray-800 text-lg"><%= m[:opponent].name %></p>
+          <p class="text-sm text-gray-500">Estrategia rival: <strong><%= m[:opponent_strategy]&.name %></strong></p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-indigo-600"><%= m[:my_score] %></p>
+          <p class="text-xs text-gray-400">mis puntos</p>
+        </div>
+        <div class="text-center">
+          <p class="text-lg font-semibold text-gray-400"><%= m[:their_score] %></p>
+          <p class="text-xs text-gray-400">sus puntos</p>
+        </div>
+        <div class="text-center min-w-20">
+          <p class="text-sm <%= outcome_color %>"><%= outcome_label %></p>
+        </div>
+        <div>
+          <%= link_to "▶ Ver replay", my_match_path(m[:id]),
+              class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg px-4 py-2 transition" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="mt-8 flex gap-4">
+  <%= link_to "← Resultados generales", results_path,
+      class: "text-indigo-400 hover:text-indigo-600 text-sm hover:underline" %>
+</div>

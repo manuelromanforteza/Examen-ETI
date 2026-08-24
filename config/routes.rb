@@ -25,10 +25,15 @@ Rails.application.routes.draw do
   get "waiting", to: "groups#waiting", as: :waiting
 
   # Admin panel (HTTP Basic Auth)
-  get  "admin",                  to: "admin#index",           as: :admin
-  post "admin/run_tournament",   to: "admin#run_tournament",  as: :admin_run_tournament
+  get  "admin",                  to: "admin#index",            as: :admin
+  patch "admin/rounds",          to: "admin#update_rounds",    as: :admin_update_rounds
+  post "admin/run_tournament",   to: "admin#run_tournament",   as: :admin_run_tournament
   post "admin/reset_tournament", to: "admin#reset_tournament", as: :admin_reset_tournament
 
   # Results (public after tournament is done)
   get "results", to: "results#index", as: :results
+
+  # Match replay (group-authenticated)
+  get "my_matches",         to: "matches#index",  as: :my_matches
+  get "my_matches/:id",     to: "matches#show",   as: :my_match
 end

@@ -1,7 +1,7 @@
 # PROGRESS — Torneo del Dilema del Prisionero Iterado
 
 > Actualiza este archivo al terminar cada fase.  
-> Última actualización: **Fase 3 completa / Fase 4 pendiente** (99/99 tests ✅)
+> Última actualización: **Fase 4.5 en progreso** (Fase 4 completa: 111/111 tests ✅)
 
 ---
 
@@ -210,7 +210,8 @@ bundle exec rspec spec/lib/game_engine_spec.rb --format documentation
 | Fase 1 | GameEngine + 8 estrategias + tests | ✅ Completa |
 | Fase 2 | Flujo de grupos: entrada, catálogo, selección, espera | ✅ Completa |
 | Fase 3 | Panel admin + ejecución del torneo + resultados | ✅ Completa |
-| Fase 4 | Action Cable + animación reveal en vivo | ⬜ Pendiente |
+| Fase 4 | Action Cable + animación reveal en vivo | ✅ Completa |
+| Fase 5 | Pulido visual, leaderboard final | ⬜ Pendiente |
 | Fase 4 | Action Cable + animación reveal en vivo | ⬜ Pendiente |
 | Fase 5 | Pulido visual, leaderboard final | ⬜ Pendiente |
 | Fase 6 | Deploy a Render.com | ⬜ Pendiente |
@@ -222,12 +223,7 @@ bundle exec rspec spec/lib/game_engine_spec.rb --format documentation
 ### Fase 2 — Flujo de grupos ✅ COMPLETA
 ### Fase 3 — Panel admin + ejecución del torneo ✅ COMPLETA
 
-### Fase 4 — Action Cable + animación
-- Canal `TournamentChannel`
-- Suscripción desde pantalla de espera
-- Broadcast al ejecutar el torneo → todos redirigen a pantalla de resultados
-- Animación ronda a ronda con Stimulus (setTimeout, datos ya en el HTML)
-
+### Fase 4 — Action Cable + animación reveal ✅ COMPLETA
 ### Fase 5 — Pulido
 - Página de instrucciones/reglas
 - Leaderboard con animación de contadores

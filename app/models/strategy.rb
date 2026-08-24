@@ -10,7 +10,8 @@ class Strategy < ApplicationRecord
     tit_for_two_tats
     suspicious_tit_for_tat
     pavlov
-    random
+    tester
+    joss
   ].freeze
 
   validates :key, presence: true, uniqueness: true, inclusion: { in: KEYS }

@@ -11,7 +11,7 @@ namespace :demo do
     tournament = TournamentSession
                    .where(status: %w[setup collecting])
                    .order(created_at: :desc)
-                   .first_or_create!(rounds_per_match: 10, status: "collecting")
+                   .first_or_create!(rounds_per_match: 50, status: "collecting")
 
     puts "Usando TournamentSession ##{tournament.id} (status: #{tournament.status})"
     puts ""
@@ -23,8 +23,8 @@ namespace :demo do
       { name: "Los Lobos",     pin: "4444", strategy_key: "grudger" },
       { name: "Los Zorros",    pin: "5555", strategy_key: "pavlov" },
       { name: "Los Cóndores",  pin: "6666", strategy_key: "tit_for_two_tats" },
-      { name: "Los Pumas",     pin: "7777", strategy_key: "suspicious_tit_for_tat" },
-      { name: "Los Halcones",  pin: "8888", strategy_key: "random" },
+      { name: "Los Pumas",     pin: "7777", strategy_key: "tester" },
+      { name: "Los Halcones",  pin: "8888", strategy_key: "joss" },
     ]
 
     demo_groups.each do |attrs|

@@ -53,11 +53,18 @@ strategies = [
     cons: "Su comportamiento es menos intuitivo de explicar y puede parecer errático frente a estrategias poco predecibles."
   },
   {
-    key: "random",
-    name: "Random",
-    description: "Coopera o traiciona con probabilidad 50/50 en cada ronda, de forma completamente aleatoria e independiente del historial.",
-    pros: "Completamente impredecible; ningún rival puede anticipar sus movimientos.",
-    cons: "No tiene lógica estratégica real. En promedio rinde mal porque no explota el comportamiento cooperador ni castiga el traicionero."
+    key: "tester",
+    name: "Tester",
+    description: "Traiciona en la primera ronda para «probar» al rival. Si el rival se defendió (traicionó en ronda 1), coopera en ronda 2 como disculpa y luego juega como Tit for Tat. Si el rival no se defendió, sigue traicionando todas las rondas restantes.",
+    pros: "Explota sin piedad a rivales demasiado cooperadores. Frente a rivales firmes se convierte en una variante de TfT.",
+    cons: "Contra estrategias que sí se defienden termina perdiendo puntos en ronda 1 para luego comportarse como TfT, sin ventaja real."
+  },
+  {
+    key: "joss",
+    name: "Joss",
+    description: "Juega como Tit for Tat pero con un 10% de probabilidad de traicionar oportunistamente en rondas donde TfT cooperaría. Cuando TfT diría «traiciona», Joss siempre traiciona.",
+    pros: "Obtiene pequeñas ganancias extra con traiciones oportunistas. Mantiene el efecto disuasivo de TfT.",
+    cons: "Sus traiciones aleatorias pueden desencadenar ciclos de represalia con estrategias reactivas, hundiéndose en mutua defección."
   }
 ]
 
@@ -69,6 +76,13 @@ strategies.each do |attrs|
     s.cons        = attrs[:cons]
   end
   puts "Strategy seeded: #{attrs[:name]}"
+end
+
+# Remove the old "random" strategy if it exists (replaced by Tester + Joss)
+if (old_random = Strategy.find_by(key: "random"))
+  old_random.selections.destroy_all
+  old_random.destroy!
+  puts "Removed old 'random' strategy"
 end
 
 puts "\nTotal strategies: #{Strategy.count}"

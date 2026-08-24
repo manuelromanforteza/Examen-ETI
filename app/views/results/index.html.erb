@@ -41,9 +41,21 @@
   </div>
 <% end %>
 
-<%# Leaderboard table %>
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-  <h2 class="font-bold text-gray-700 mb-4 text-lg">Leaderboard</h2>
+<%# Leaderboard table — wrapped in Stimulus reveal controller %>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8"
+     data-controller="reveal"
+     data-reveal-delay-value="400">
+
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="font-bold text-gray-700 text-lg">Leaderboard</h2>
+    <%# Skip button — hidden until JS connects; reveal_controller shows it %>
+    <button data-reveal-target="skipButton"
+            data-action="click->reveal#showAll"
+            class="hidden text-xs text-indigo-400 hover:text-indigo-600 border border-indigo-200 rounded px-3 py-1 transition">
+      Ver todo de una vez →
+    </button>
+  </div>
+
   <table class="w-full text-sm">
     <thead>
       <tr class="text-left text-gray-400 border-b border-gray-100 text-xs uppercase tracking-wide">
@@ -67,7 +79,7 @@
                   end
           row_class = i == 0 ? "bg-yellow-50" : ""
         %>
-        <tr class="<%= row_class %>">
+        <tr class="<%= row_class %>" data-reveal-target="entry">
           <td class="py-3 font-bold text-lg"><%= medal %></td>
           <td class="py-3 font-semibold text-gray-800"><%= entry[:group].name %></td>
           <td class="py-3 text-gray-500"><%= entry[:strategy]&.name || "—" %></td>
@@ -82,11 +94,13 @@
   <p class="text-xs text-gray-400 mt-2">V = Victorias · E = Empates · D = Derrotas</p>
 </div>
 
-<%# Per-group expandable detail %>
+<%# Per-group expandable detail — each card is also a reveal entry %>
 <h2 class="font-bold text-gray-700 mb-4 text-lg">Detalle por grupo</h2>
-<div class="space-y-3">
+<div class="space-y-3"
+     data-controller="reveal"
+     data-reveal-delay-value="350">
   <% @leaderboard.each do |entry| %>
-    <details class="bg-white rounded-xl border border-gray-100 shadow-sm">
+    <details class="bg-white rounded-xl border border-gray-100 shadow-sm" data-reveal-target="entry">
       <summary class="px-6 py-4 cursor-pointer flex items-center justify-between hover:bg-gray-50 rounded-xl select-none">
         <div class="flex items-center gap-3">
           <span class="font-bold text-gray-800"><%= entry[:group].name %></span>
@@ -134,7 +148,11 @@
   <% end %>
 </div>
 
-<div class="mt-8 text-center">
+<div class="mt-8 text-center flex flex-col items-center gap-2">
+  <% if current_group %>
+    <%= link_to "▶ Ver mis duelos (replay)", my_matches_path,
+        class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg px-5 py-2 transition" %>
+  <% end %>
   <%= link_to "← Volver al inicio", root_path,
       class: "text-indigo-400 hover:text-indigo-600 text-sm hover:underline" %>
 </div>

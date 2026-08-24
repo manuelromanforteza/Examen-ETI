@@ -277,4 +277,50 @@ RSpec.describe "Admin flow", type: :request do
       end
     end
   end
+
+  # ---------------------------------------------------------------------------
+  # PATCH /admin/rounds — configurable rounds per match
+  # ---------------------------------------------------------------------------
+  describe "PATCH /admin/rounds" do
+    it "requires HTTP Basic auth" do
+      patch admin_update_rounds_path, params: { rounds_per_match: 20 }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects wrong password" do
+      patch admin_update_rounds_path, params: { rounds_per_match: 20 }, headers: auth_headers("bad")
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "updates rounds_per_match with valid value" do
+      patch admin_update_rounds_path, params: { rounds_per_match: 30 }, headers: auth_headers
+      expect(tournament.reload.rounds_per_match).to eq(30)
+    end
+
+    it "redirects to admin after success" do
+      patch admin_update_rounds_path, params: { rounds_per_match: 30 }, headers: auth_headers
+      expect(response).to redirect_to(admin_path)
+    end
+
+    it "rejects rounds < 1" do
+      original = tournament.rounds_per_match
+      patch admin_update_rounds_path, params: { rounds_per_match: 0 }, headers: auth_headers
+      expect(tournament.reload.rounds_per_match).to eq(original)
+      expect(response).to redirect_to(admin_path)
+    end
+
+    it "blocks update once tournament is running" do
+      tournament.update!(status: "running")
+      patch admin_update_rounds_path, params: { rounds_per_match: 100 }, headers: auth_headers
+      expect(response).to redirect_to(admin_path)
+      expect(tournament.reload.rounds_per_match).not_to eq(100)
+    end
+
+    it "blocks update once tournament is done" do
+      tournament.update!(status: "done")
+      patch admin_update_rounds_path, params: { rounds_per_match: 100 }, headers: auth_headers
+      expect(response).to redirect_to(admin_path)
+      expect(tournament.reload.rounds_per_match).not_to eq(100)
+    end
+  end
 end

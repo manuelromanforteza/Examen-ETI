@@ -45,15 +45,51 @@ module GameEngine
       if mine.empty?
         :cooperate
       else
-        last_my   = mine.last
+        last_my    = mine.last
         last_their = theirs.last
-        score, _  = PAYOFFS[last_my][last_their]
+        score, _   = PAYOFFS[last_my][last_their]
         score >= 3 ? last_my : (last_my == :cooperate ? :defect : :cooperate)
       end
     },
 
-    # Cooperates or defects at random with equal probability
-    random: ->(_mine, _theirs) { rand(2).zero? ? :cooperate : :defect }
+    # Tester: defects on round 1 to "probe" the opponent.
+    # If the opponent retaliated (defected on round 1): cooperates on round 2
+    #   as an apology, then plays Tit for Tat from round 3 onwards.
+    # If the opponent did NOT retaliate (cooperated on round 1): keeps defecting
+    #   for the rest of the match (exploiting a pushover).
+    tester: lambda { |mine, theirs|
+      if mine.empty?
+        :defect                               # Round 1: probe
+      elsif mine.length == 1
+        # Round 2 decision depends on whether opponent retaliated in round 1
+        if theirs[0] == :defect
+          :cooperate                          # Opponent defended → apologize
+        else
+          :defect                             # Opponent didn't retaliate → keep exploiting
+        end
+      else
+        # Round 3+: if opponent defended in round 1, play TfT; else keep defecting
+        if theirs[0] == :defect
+          theirs.last                         # TfT: copy opponent's last move
+        else
+          :defect                             # Opponent was a pushover → always defect
+        end
+      end
+    },
+
+    # Joss: plays like Tit for Tat but with a 10% chance of defecting
+    # opportunistically on rounds where TfT would cooperate.
+    # When TfT would defect, Joss always defects (no mercy).
+    # NOTE: uses the global RNG; seed the RNG before calling run_match for
+    # reproducibility.
+    joss: lambda { |_mine, theirs|
+      tft_move = theirs.empty? ? :cooperate : theirs.last
+      if tft_move == :cooperate
+        rand < 0.1 ? :defect : :cooperate    # 10% opportunistic defection
+      else
+        :defect
+      end
+    }
   }.freeze
 
   # --------------------------------------------------------------------------
@@ -63,7 +99,8 @@ module GameEngine
   # Parameters:
   #   strategy_a, strategy_b — callable (lambda or proc) or a strategy key (Symbol)
   #   rounds                 — number of rounds (integer >= 1)
-  #   seed                   — optional Random seed for reproducibility with :random
+  #   seed                   — optional Random seed for reproducibility with
+  #                            stochastic strategies (:joss, etc.)
   #
   # Returns a Hash:
   #   {
@@ -79,10 +116,10 @@ module GameEngine
     fn_a = resolve_strategy(strategy_a)
     fn_b = resolve_strategy(strategy_b)
 
-    history_a = []
-    history_b = []
-    score_a   = 0
-    score_b   = 0
+    history_a  = []
+    history_b  = []
+    score_a    = 0
+    score_b    = 0
     rounds_log = []
 
     rounds.times do
@@ -103,6 +140,17 @@ module GameEngine
   end
 
   # --------------------------------------------------------------------------
+  # deterministic_seed
+  # Derives a reproducible integer seed from tournament + group IDs.
+  # Same inputs → same seed → same match outcome for stochastic strategies.
+  # --------------------------------------------------------------------------
+  def self.deterministic_seed(tournament_id, group_a_id, group_b_id)
+    # Sort group IDs so order doesn't matter
+    id1, id2 = [group_a_id, group_b_id].minmax
+    Digest::MD5.hexdigest("#{tournament_id}-#{id1}-#{id2}").to_i(16)
+  end
+
+  # --------------------------------------------------------------------------
   # Resolve strategy: accepts a Symbol key or any callable
   # --------------------------------------------------------------------------
   def self.resolve_strategy(strategy)
@@ -116,3 +164,4 @@ module GameEngine
   end
   private_class_method :resolve_strategy
 end
+

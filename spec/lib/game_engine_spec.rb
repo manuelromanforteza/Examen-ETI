@@ -136,18 +136,55 @@ RSpec.describe GameEngine do
     end
   end
 
-  describe "random" do
-    it "returns only :cooperate or :defect" do
-      100.times do
-        result = play(:random, [], [])
-        expect([:cooperate, :defect]).to include(result)
-      end
+  describe "tester" do
+    it "defects on round 1" do
+      expect(play(:tester, [], [])).to eq(:defect)
     end
 
-    it "returns both values over many trials (probabilistic)" do
-      results = 200.times.map { play(:random, [], []) }.uniq
-      expect(results).to include(:cooperate)
-      expect(results).to include(:defect)
+    it "cooperates on round 2 if opponent retaliated (defended) in round 1" do
+      expect(play(:tester, [:defect], [:defect])).to eq(:cooperate)
+    end
+
+    it "defects on round 2 if opponent did NOT retaliate in round 1" do
+      expect(play(:tester, [:defect], [:cooperate])).to eq(:defect)
+    end
+
+    it "plays TfT from round 3 when opponent defended (copies last opponent move)" do
+      # Opponent defended r1, we cooperated r2, opponent cooperated r2
+      expect(play(:tester, [:defect, :cooperate], [:defect, :cooperate])).to eq(:cooperate)
+      expect(play(:tester, [:defect, :cooperate], [:defect, :defect])).to eq(:defect)
+    end
+
+    it "keeps defecting from round 3 when opponent was a pushover" do
+      expect(play(:tester, [:defect, :defect], [:cooperate, :cooperate])).to eq(:defect)
+      expect(play(:tester, [:defect, :defect, :defect], [:cooperate, :cooperate, :cooperate])).to eq(:defect)
+    end
+  end
+
+  describe "joss" do
+    it "cooperates on first round (deterministic, no RNG)" do
+      srand(0)
+      # With seed 0, first rand < 0.1 produces 0.5488... → cooperate
+      expect(play(:joss, [], [])).to eq(:cooperate)
+    end
+
+    it "defects when TfT would defect (no RNG involved)" do
+      expect(play(:joss, [:cooperate], [:defect])).to eq(:defect)
+    end
+
+    it "occasionally defects opportunistically (probabilistic, ~10%)" do
+      srand(123)
+      results = 500.times.map { play(:joss, [], []) }
+      defects = results.count(:defect)
+      # Expect roughly 10% defections (allow generous range 2-25%)
+      expect(defects).to be_between(10, 125)
+    end
+
+    it "always cooperates when TfT would cooperate and seed eliminates the 10% chance" do
+      srand(42)
+      # Run enough times that a totally-defecting strategy would fail
+      cooperates = 50.times.count { play(:joss, [], []) == :cooperate }
+      expect(cooperates).to be > 35  # overwhelmingly cooperates
     end
   end
 
@@ -310,13 +347,85 @@ RSpec.describe GameEngine do
   end
 
   # ---------------------------------------------------------------------------
-  # Seeded random match is reproducible
+  # Cross-match: Tester vs Always Cooperate
   # ---------------------------------------------------------------------------
-  describe "random with seed" do
-    it "produces the same history when given the same seed" do
-      r1 = GameEngine.run_match(:random, :random, 10, seed: 42)
-      r2 = GameEngine.run_match(:random, :random, 10, seed: 42)
+  describe "Tester vs Always Cooperate" do
+    subject(:result) { GameEngine.run_match(:tester, :always_cooperate, 5) }
+
+    it "Tester defects every round (opponent never defended)" do
+      result[:history].each { |r| expect(r[:a]).to eq(:defect) }
+    end
+
+    it "Tester exploits fully: 5 pts/round, AC gets 0" do
+      expect(result[:score_a]).to eq(25)  # 5×5
+      expect(result[:score_b]).to eq(0)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # Cross-match: Tester vs Always Defect (opponent defends r1)
+  # ---------------------------------------------------------------------------
+  describe "Tester vs Always Defect" do
+    subject(:result) { GameEngine.run_match(:tester, :always_defect, 5) }
+
+    it "Tester defects r1, cooperates r2 (apology), then mirrors AD (defects r3+)" do
+      moves = result[:history].map { |r| r[:a] }
+      expect(moves[0]).to eq(:defect)    # probe
+      expect(moves[1]).to eq(:cooperate) # apology (opponent defended)
+      moves[2..].each { |m| expect(m).to eq(:defect) }  # TfT mirrors AD
+    end
+
+    it "scores: Tester=1+0+3×1=4, AD=1+5+3×1=9" do
+      # r1: T defects, AD defects → 1/1
+      # r2: T cooperates, AD defects → 0/5
+      # r3-r5: both defect → 1/1 each = 3/3
+      expect(result[:score_a]).to eq(4)
+      expect(result[:score_b]).to eq(9)
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # Cross-match: Joss vs Always Cooperate (reproducible with seed)
+  # ---------------------------------------------------------------------------
+  describe "Joss with seed for reproducibility" do
+    it "produces identical history on two runs with the same seed" do
+      r1 = GameEngine.run_match(:joss, :always_cooperate, 20, seed: 7777)
+      r2 = GameEngine.run_match(:joss, :always_cooperate, 20, seed: 7777)
       expect(r1[:history]).to eq(r2[:history])
+    end
+
+    it "produces different history with a different seed" do
+      r1 = GameEngine.run_match(:joss, :always_cooperate, 50, seed: 1)
+      r2 = GameEngine.run_match(:joss, :always_cooperate, 50, seed: 999)
+      # With 50 rounds and 10% chance, almost certainly at least one difference
+      expect(r1[:history]).not_to eq(r2[:history])
+    end
+  end
+
+  # ---------------------------------------------------------------------------
+  # deterministic_seed helper
+  # ---------------------------------------------------------------------------
+  describe ".deterministic_seed" do
+    it "returns an integer" do
+      expect(GameEngine.deterministic_seed(1, 2, 3)).to be_an(Integer)
+    end
+
+    it "is the same for the same inputs" do
+      s1 = GameEngine.deterministic_seed(10, 5, 7)
+      s2 = GameEngine.deterministic_seed(10, 5, 7)
+      expect(s1).to eq(s2)
+    end
+
+    it "is symmetric (group order doesn't matter)" do
+      expect(GameEngine.deterministic_seed(1, 3, 5)).to eq(GameEngine.deterministic_seed(1, 5, 3))
+    end
+
+    it "differs when tournament changes" do
+      expect(GameEngine.deterministic_seed(1, 3, 5)).not_to eq(GameEngine.deterministic_seed(2, 3, 5))
+    end
+
+    it "differs when groups change" do
+      expect(GameEngine.deterministic_seed(1, 3, 5)).not_to eq(GameEngine.deterministic_seed(1, 4, 5))
     end
   end
 end

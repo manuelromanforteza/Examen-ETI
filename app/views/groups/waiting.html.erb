@@ -1,5 +1,10 @@
 <% content_for :title, "Esperando al profesor — Torneo del Dilema" %>
 
+<%= turbo_stream_from "tournament_#{@tournament.id}" %>
+
+<%# Hidden redirect trigger — replaced by broadcast when tournament starts %>
+<div id="tournament_redirect_trigger"></div>
+
 <div class="max-w-lg mx-auto mt-12 text-center">
   <div class="bg-white rounded-2xl shadow-lg p-10">
     <div class="text-5xl mb-4">✅</div>
@@ -19,12 +24,13 @@
 
     <div class="text-gray-500 text-sm mb-6">
       <p class="font-medium text-gray-700 mb-1">Estado del torneo</p>
-      <p>
+      <%# id="ready_counter" is replaced live via Turbo Stream broadcast %>
+      <span id="ready_counter">
         <span class="font-semibold text-indigo-600"><%= @ready_groups %></span>
         de
         <span class="font-semibold text-indigo-600"><%= @total_groups %></span>
         grupos han elegido su estrategia.
-      </p>
+      </span>
     </div>
 
     <div class="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-yellow-800 text-sm">
